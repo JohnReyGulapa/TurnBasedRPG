@@ -24,5 +24,10 @@ namespace TurnBasedRPG
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
+        private void textBoxPlayer2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

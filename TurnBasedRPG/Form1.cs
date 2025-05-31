@@ -34,6 +34,10 @@ namespace TurnBasedRPG
 
             labelTurnInfo.Text = actionLog + "\n" + (isPlayer1Turn ? $"{player1.Name}'s turn." : $"{player2.Name}'s turn.");
 
+            // Refresh HP bars by forcing repaint
+            panelP1HPBar.Invalidate();
+            panelP2HPBar.Invalidate();
+
             // Enable or disable buttons based on current player's stun state
             bool isStunned = GetCurrentPlayer().IsStunned;
             buttonAttack.Enabled = !isStunned;
@@ -42,8 +46,9 @@ namespace TurnBasedRPG
 
             if (isStunned)
             {
-                labelTurnInfo.Text += "\nYou're stunned! Skipping turn...";
-                EndTurn(); // Automatically skip turn if stunned
+                string skipLog = $"\n{GetCurrentPlayer().Name} is stunned! Skipping their turn...";
+                EndTurn(skipLog);
+                return; // Prevent double UpdateUI
             }
         }
 
@@ -55,10 +60,8 @@ namespace TurnBasedRPG
             var attacker = GetCurrentPlayer();
             var defender = GetOpponentPlayer();
 
-            attacker.AttackTarget(defender);
-            string log = $"{attacker.Name} attacked {defender.Name}!";
+            string log = attacker.AttackTarget(defender);
 
-            CheckPassiveTriggers(attacker, defender);
             CheckGameOver();
             EndTurn(log);
         }
@@ -68,10 +71,8 @@ namespace TurnBasedRPG
             var attacker = GetCurrentPlayer();
             var defender = GetOpponentPlayer();
 
-            attacker.Taunt(defender);
-            string log = $"{attacker.Name} taunted {defender.Name}.";
+            string log = attacker.Taunt(defender);
 
-            CheckPassiveTriggers(attacker, defender);
             CheckGameOver();
             EndTurn(log);
         }
@@ -79,17 +80,34 @@ namespace TurnBasedRPG
         private void buttonDefend_Click(object sender, EventArgs e)
         {
             var defender = GetCurrentPlayer();
-            defender.Defend();
-            string log = $"{defender.Name} defended!";
+            string log = defender.Defend();
 
             EndTurn(log);
         }
 
         private void EndTurn(string log = "")
         {
-            GetCurrentPlayer().EndTurnReset();
+            var current = GetCurrentPlayer();
+            var opponent = GetOpponentPlayer();
+
+            current.EndTurnReset();
+            string passiveLog = "";
+
+            if (current.PassiveTriggered)
+            {
+                passiveLog += $"\n{current.Name}'s passive effect has activated!";
+                current.PassiveTriggered = false; // reset
+            }
+
+            if (opponent.PassiveTriggered)
+            {
+                passiveLog += $"\n{opponent.Name}'s passive effect has activated!";
+                opponent.PassiveTriggered = false;
+            }
+
             isPlayer1Turn = !isPlayer1Turn;
-            UpdateUI(log);
+
+            UpdateUI(log + passiveLog);
         }
 
         private void CheckPassiveTriggers(Character current, Character opponent)
@@ -118,6 +136,52 @@ namespace TurnBasedRPG
             buttonAttack.Enabled = false;
             buttonTaunt.Enabled = false;
             buttonDefend.Enabled = false;
+        }
+
+        private void panelP1HPBar_Paint(object sender, PaintEventArgs e)
+        {
+            DrawHPBar(e.Graphics, player1, panelP1HPBar);
+        }
+
+        private void panelP2HPBar_Paint(object sender, PaintEventArgs e)
+        {
+            DrawHPBar(e.Graphics, player2, panelP2HPBar);
+        }
+        private void DrawHPBar(Graphics g, Character player, Panel panel)
+        {
+            if (player == null) return;
+
+            float percent = (float)player.Hp / player.MaxHp;
+            int width = (int)(panel.Width * percent);
+            Color barColor;
+
+            if (percent > 0.5f)
+                barColor = Color.Green;
+            else if (percent > 0.3f)
+                barColor = Color.Orange;
+            else if (percent > 0)
+                barColor = Color.Red;
+            else
+                barColor = Color.Transparent;
+
+            using (Brush brush = new SolidBrush(barColor))
+            {
+                g.FillRectangle(brush, 0, 0, width, panel.Height);
+            }
+
+            // Optional: draw a border
+            using (Pen borderPen = new Pen(Color.Black))
+            {
+                g.DrawRectangle(borderPen, 0, 0, panel.Width - 1, panel.Height - 1);
+            }
+
+            string hpText = $"{player.Hp}/{player.MaxHp}";
+            using (Font font = new Font("Arial", 10, FontStyle.Bold))
+            using (Brush textBrush = new SolidBrush(Color.White))
+            using (StringFormat format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+            {
+                g.DrawString(hpText, font, textBrush, new RectangleF(0, 0, panel.Width, panel.Height), format);
+            }
         }
     }
 }

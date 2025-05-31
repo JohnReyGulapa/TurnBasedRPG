@@ -55,7 +55,7 @@ namespace TurnBasedRPG
                     MaxHp = 85; Attack = 4; Defense = 4; Wits = 4; MaxStress = 15; MentalStrength = 9;
                     break;
                 case ClassType.Prodigy:
-                    MaxHp = 80; Attack = 15; Defense = 15; Wits = 8; MaxStress = 10; MentalStrength = 5;
+                    MaxHp = 80; Attack = 15; Defense = 6; Wits = 8; MaxStress = 10; MentalStrength = 5;
                     break;
             }
             Hp = MaxHp;
@@ -66,32 +66,58 @@ namespace TurnBasedRPG
             return rand.Next(100) < (MentalStrength * 2);
         }
 
-        public void AttackTarget(Character target)
+        public string AttackTarget(Character target)
         {
             bool doubleDamage = false;
+            int defenseMultiplier = target.IsDefending ? target.Defense * 2 : target.Defense;
 
             // Prodigy passive chance
             if (Class == ClassType.Prodigy && rand.Next(100) < 10)
             {
                 doubleDamage = true;
+                PassiveTriggered = true;
             }
 
-            int baseDamage = doubleDamage ? Attack * 2 : Attack;
-            int defenseMultiplier = target.IsDefending ? target.Defense * 2 : target.Defense;
-            int damage = Math.Max(baseDamage - defenseMultiplier * 3, 0);
-            target.Hp = Math.Max(0, target.Hp - damage);
+            int minDamage = (int)(Attack * 0.8);
+            int maxDamage = (int)(Attack * 1.2);
+            int baseDamage = rand.Next(minDamage, maxDamage + 1);
+            int originalDamage = baseDamage;
+
+            if (doubleDamage)
+                baseDamage *= 2;
+
+            int reducedDamage = Math.Max(baseDamage - defenseMultiplier * 1, 0);
+
+            target.Hp = Math.Max(0, target.Hp - reducedDamage);
+
+            return $"{Name} attacks! Roll: {originalDamage}" +
+                   (doubleDamage ? " (Passive: DOUBLE DAMAGE!)" : "") +
+                   $", {target.Name}'s Defense: {defenseMultiplier}, Final Damage: {reducedDamage}";
         }
 
-        public void Taunt(Character target)
+
+
+        public string Taunt(Character target)
         {
-            if (target.TryResistTaunt()) return;
+            if (target.TryResistTaunt())
+            {
+                return $"{Name} attempted to taunt {target.Name}, but they resisted it!";
+            }
 
             int stressAdded = Wits;
+            bool doubled = false;
 
             if (Class == ClassType.Prodigy && rand.Next(100) < 10)
+            {
                 stressAdded *= 2;
+                doubled = true;
+                PassiveTriggered = true;
+            }
 
             target.Stress += stressAdded;
+            string log = $"{Name} taunted {target.Name} for {stressAdded} Stress" +
+                         (doubled ? " (Passive: DOUBLE STRESS!)" : "") +
+                         $". Total Stress: {target.Stress}/{target.MaxStress}.";
 
             if (target.Stress >= target.MaxStress)
             {
@@ -103,16 +129,27 @@ namespace TurnBasedRPG
                 {
                     target.PassiveTriggered = true;
                     target.IsStunned = true;
+                    log += $" {target.Name} is an Athlete and their passive triggers (Stunned on max stress)!";
                 }
 
                 if (Class == ClassType.Brainiac)
-                    target.Stress -= target.MaxStress / 5; // Reduce 20% from opponent
+                {
+                    target.Hp = Math.Max(0, target.Hp - 20);
+                    log += $" {Name} is a Brainiac and their passive triggers — {target.Name} loses 20 HP!";
+                }
+                else
+                {
+                    log += $" {target.Name} is now STUNNED!";
+                }
             }
+
+            return log;
         }
 
-        public void Defend()
+        public string Defend()
         {
             IsDefending = true;
+            return $"{Name} is defending! Total defense is now {Defense * 2}.";
         }
 
         public void ApplyPassiveEffects()

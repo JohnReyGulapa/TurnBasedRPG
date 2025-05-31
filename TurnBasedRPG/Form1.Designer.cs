@@ -22,6 +22,8 @@
             buttonAttack = new Button();
             buttonTaunt = new Button();
             buttonDefend = new Button();
+            panelP1HPBar = new Panel();
+            panelP2HPBar = new Panel();
             SuspendLayout();
             // 
             // labelP1Stats
@@ -38,7 +40,7 @@
             // 
             labelP2Stats.AutoSize = true;
             labelP2Stats.Font = new Font("Segoe UI", 10F);
-            labelP2Stats.Location = new Point(400, 30);
+            labelP2Stats.Location = new Point(601, 30);
             labelP2Stats.Name = "labelP2Stats";
             labelP2Stats.Size = new Size(101, 19);
             labelP2Stats.TabIndex = 1;
@@ -48,7 +50,7 @@
             // 
             labelTurnInfo.AutoSize = true;
             labelTurnInfo.Font = new Font("Segoe UI", 10F);
-            labelTurnInfo.Location = new Point(30, 150);
+            labelTurnInfo.Location = new Point(30, 248);
             labelTurnInfo.MaximumSize = new Size(500, 0);
             labelTurnInfo.Name = "labelTurnInfo";
             labelTurnInfo.Size = new Size(121, 19);
@@ -57,8 +59,9 @@
             // 
             // buttonAttack
             // 
+            buttonAttack.BackgroundImageLayout = ImageLayout.Zoom;
             buttonAttack.Font = new Font("Segoe UI", 10F);
-            buttonAttack.Location = new Point(30, 250);
+            buttonAttack.Location = new Point(130, 336);
             buttonAttack.Name = "buttonAttack";
             buttonAttack.Size = new Size(100, 40);
             buttonAttack.TabIndex = 3;
@@ -69,7 +72,7 @@
             // buttonTaunt
             // 
             buttonTaunt.Font = new Font("Segoe UI", 10F);
-            buttonTaunt.Location = new Point(150, 250);
+            buttonTaunt.Location = new Point(398, 336);
             buttonTaunt.Name = "buttonTaunt";
             buttonTaunt.Size = new Size(100, 40);
             buttonTaunt.TabIndex = 4;
@@ -80,7 +83,7 @@
             // buttonDefend
             // 
             buttonDefend.Font = new Font("Segoe UI", 10F);
-            buttonDefend.Location = new Point(270, 250);
+            buttonDefend.Location = new Point(703, 336);
             buttonDefend.Name = "buttonDefend";
             buttonDefend.Size = new Size(100, 40);
             buttonDefend.TabIndex = 5;
@@ -88,9 +91,29 @@
             buttonDefend.UseVisualStyleBackColor = true;
             buttonDefend.Click += buttonDefend_Click;
             // 
+            // panelP1HPBar
+            // 
+            panelP1HPBar.BackColor = SystemColors.ControlDark;
+            panelP1HPBar.Location = new Point(30, 52);
+            panelP1HPBar.Name = "panelP1HPBar";
+            panelP1HPBar.Size = new Size(200, 20);
+            panelP1HPBar.TabIndex = 6;
+            panelP1HPBar.Paint += panelP1HPBar_Paint;
+            // 
+            // panelP2HPBar
+            // 
+            panelP2HPBar.BackColor = SystemColors.ControlDark;
+            panelP2HPBar.Location = new Point(601, 52);
+            panelP2HPBar.Name = "panelP2HPBar";
+            panelP2HPBar.Size = new Size(200, 20);
+            panelP2HPBar.TabIndex = 7;
+            panelP2HPBar.Paint += panelP2HPBar_Paint;
+            // 
             // Form1
             // 
-            ClientSize = new Size(600, 350);
+            ClientSize = new Size(856, 422);
+            Controls.Add(panelP2HPBar);
+            Controls.Add(panelP1HPBar);
             Controls.Add(buttonDefend);
             Controls.Add(buttonTaunt);
             Controls.Add(buttonAttack);
@@ -111,5 +134,7 @@
         private System.Windows.Forms.Button buttonAttack;
         private System.Windows.Forms.Button buttonTaunt;
         private System.Windows.Forms.Button buttonDefend;
+        private Panel panelP1HPBar;
+        private Panel panelP2HPBar;
     }
 }

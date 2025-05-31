@@ -68,24 +68,66 @@ namespace TurnBasedRPG
                 g.Clear(Color.White);
 
                 Pen pen = new Pen(colors[colorIdx], 4);
-
-                // Draw a simple stick figure centered in the PictureBox
                 int centerX = pb.Width / 2;
                 int centerY = pb.Height / 2;
+                int idx = (pb == pictureBoxPlayer1) ? 1 : 2;
 
-                // Head
+                // ===== DRAW LEGS FIRST =====
+                g.DrawLine(pen, centerX, centerY + 30, centerX - 20, centerY + 60); // left leg
+                g.DrawLine(pen, centerX, centerY + 30, centerX + 20, centerY + 60); // right leg
+
+                // ===== DRAW BODY & ARMS =====
+                g.DrawLine(pen, centerX, centerY - 30, centerX, centerY + 30); // body
+                g.DrawLine(pen, centerX - 20, centerY - 10, centerX + 20, centerY - 10); // arms
+
+                // ===== DRAW HEAD =====
                 g.DrawEllipse(pen, centerX - 15, centerY - 60, 30, 30);
 
-                // Body
-                g.DrawLine(pen, centerX, centerY - 30, centerX, centerY + 30);
+                // ===== CLOTHING: SHIRT =====
+                string shirt = shirts[shirtIndex[idx]];
+                Brush shirtBrush = shirt == "Jacket" ? Brushes.DarkGray :
+                                   shirt == "Hoodie" ? Brushes.Orange :
+                                   Brushes.LightBlue;
+                g.FillRectangle(shirtBrush, centerX - 12, centerY - 30, 24, 60);
 
-                // Arms
-                g.DrawLine(pen, centerX - 20, centerY - 10, centerX + 20, centerY - 10);
+                // ===== CLOTHING: PANTS =====
+                string selectedPants = pants[pantsIndex[idx]];
+                Brush pantsBrush = selectedPants == "Shorts" ? Brushes.Green :
+                                   selectedPants == "Trousers" ? Brushes.Brown :
+                                   Brushes.Blue;
 
-                // Legs
-                g.DrawLine(pen, centerX, centerY + 30, centerX - 20, centerY + 60);
-                g.DrawLine(pen, centerX, centerY + 30, centerX + 20, centerY + 60);
+                // Left pant leg
+                g.FillRectangle(pantsBrush, centerX - 20, centerY + 30, 10, 30);
+                // Right pant leg
+                g.FillRectangle(pantsBrush, centerX + 10, centerY + 30, 10, 30);
+
+                // ===== CLOTHING: SHOES =====
+                string shoe = shoes[shoesIndex[idx]];
+                Brush shoeBrush = shoe == "Boots" ? Brushes.DarkRed :
+                                  shoe == "Sandals" ? Brushes.Yellow :
+                                  Brushes.Black;
+
+                g.FillEllipse(shoeBrush, centerX - 22, centerY + 58, 10, 8); // left
+                g.FillEllipse(shoeBrush, centerX + 12, centerY + 58, 10, 8); // right
+
+                // ===== CLOTHING: HEAD ACCESSORY =====
+                string head = headAccessories[headIndex[idx]];
+                Brush headBrush = head == "Helmet" ? Brushes.Gray :
+                                  head == "Glasses" ? Brushes.Black :
+                                  Brushes.Purple;
+
+                if (head == "Hat" || head == "Helmet")
+                    g.FillEllipse(headBrush, centerX - 20, centerY - 65, 40, 15); // hat/helmet
+
+                if (head == "Glasses")
+                {
+                    Pen glassPen = new Pen(headBrush, 2);
+                    g.DrawRectangle(glassPen, centerX - 15, centerY - 50, 10, 10);
+                    g.DrawRectangle(glassPen, centerX + 5, centerY - 50, 10, 10);
+                    g.DrawLine(glassPen, centerX - 5, centerY - 45, centerX + 5, centerY - 45);
+                }
             }
+
             pb.Image = bmp;
         }
 

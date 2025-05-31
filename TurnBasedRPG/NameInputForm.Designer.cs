@@ -35,7 +35,7 @@
             // 
             // textBoxPlayer1
             // 
-            textBoxPlayer1.Location = new Point(467, 122);
+            textBoxPlayer1.Location = new Point(101, 122);
             textBoxPlayer1.Name = "textBoxPlayer1";
             textBoxPlayer1.Size = new Size(150, 23);
             textBoxPlayer1.TabIndex = 1;
@@ -51,10 +51,11 @@
             // 
             // textBoxPlayer2
             // 
-            textBoxPlayer2.Location = new Point(103, 122);
+            textBoxPlayer2.Location = new Point(472, 122);
             textBoxPlayer2.Name = "textBoxPlayer2";
             textBoxPlayer2.Size = new Size(150, 23);
             textBoxPlayer2.TabIndex = 3;
+            textBoxPlayer2.TextChanged += textBoxPlayer2_TextChanged;
             // 
             // buttonSelectCharacter
             // 
