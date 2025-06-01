@@ -24,6 +24,10 @@
             buttonDefend = new Button();
             panelP1HPBar = new Panel();
             panelP2HPBar = new Panel();
+            pictureBoxPlayer1 = new PictureBox();
+            pictureBoxPlayer2 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPlayer1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPlayer2).BeginInit();
             SuspendLayout();
             // 
             // labelP1Stats
@@ -50,7 +54,7 @@
             // 
             labelTurnInfo.AutoSize = true;
             labelTurnInfo.Font = new Font("Segoe UI", 10F);
-            labelTurnInfo.Location = new Point(30, 248);
+            labelTurnInfo.Location = new Point(30, 324);
             labelTurnInfo.MaximumSize = new Size(500, 0);
             labelTurnInfo.Name = "labelTurnInfo";
             labelTurnInfo.Size = new Size(121, 19);
@@ -61,7 +65,7 @@
             // 
             buttonAttack.BackgroundImageLayout = ImageLayout.Zoom;
             buttonAttack.Font = new Font("Segoe UI", 10F);
-            buttonAttack.Location = new Point(130, 336);
+            buttonAttack.Location = new Point(78, 433);
             buttonAttack.Name = "buttonAttack";
             buttonAttack.Size = new Size(100, 40);
             buttonAttack.TabIndex = 3;
@@ -72,7 +76,7 @@
             // buttonTaunt
             // 
             buttonTaunt.Font = new Font("Segoe UI", 10F);
-            buttonTaunt.Location = new Point(398, 336);
+            buttonTaunt.Location = new Point(370, 433);
             buttonTaunt.Name = "buttonTaunt";
             buttonTaunt.Size = new Size(100, 40);
             buttonTaunt.TabIndex = 4;
@@ -83,7 +87,7 @@
             // buttonDefend
             // 
             buttonDefend.Font = new Font("Segoe UI", 10F);
-            buttonDefend.Location = new Point(703, 336);
+            buttonDefend.Location = new Point(654, 433);
             buttonDefend.Name = "buttonDefend";
             buttonDefend.Size = new Size(100, 40);
             buttonDefend.TabIndex = 5;
@@ -109,9 +113,31 @@
             panelP2HPBar.TabIndex = 7;
             panelP2HPBar.Paint += panelP2HPBar_Paint;
             // 
+            // pictureBoxPlayer1
+            // 
+            pictureBoxPlayer1.AccessibleName = "pictureBoxPlayer1";
+            pictureBoxPlayer1.Location = new Point(45, 119);
+            pictureBoxPlayer1.Name = "pictureBoxPlayer1";
+            pictureBoxPlayer1.Size = new Size(202, 178);
+            pictureBoxPlayer1.TabIndex = 8;
+            pictureBoxPlayer1.TabStop = false;
+            pictureBoxPlayer1.Click += pictureBox1_Click;
+            // 
+            // pictureBoxPlayer2
+            // 
+            pictureBoxPlayer2.AccessibleName = "pictureBoxPlayer2";
+            pictureBoxPlayer2.Location = new Point(601, 119);
+            pictureBoxPlayer2.Name = "pictureBoxPlayer2";
+            pictureBoxPlayer2.Size = new Size(200, 178);
+            pictureBoxPlayer2.TabIndex = 9;
+            pictureBoxPlayer2.TabStop = false;
+            pictureBoxPlayer2.Click += pictureBoxPlayer2_Click;
+            // 
             // Form1
             // 
-            ClientSize = new Size(856, 422);
+            ClientSize = new Size(838, 520);
+            Controls.Add(pictureBoxPlayer2);
+            Controls.Add(pictureBoxPlayer1);
             Controls.Add(panelP2HPBar);
             Controls.Add(panelP1HPBar);
             Controls.Add(buttonDefend);
@@ -122,6 +148,8 @@
             Controls.Add(labelP1Stats);
             Name = "Form1";
             Text = "Turn-Based RPG";
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPlayer1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxPlayer2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -136,5 +164,7 @@
         private System.Windows.Forms.Button buttonDefend;
         private Panel panelP1HPBar;
         private Panel panelP2HPBar;
+        private PictureBox pictureBoxPlayer1;
+        private PictureBox pictureBoxPlayer2;
     }
 }

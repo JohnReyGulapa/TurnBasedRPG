@@ -21,7 +21,7 @@ namespace TurnBasedRPG
 
             // Randomly decide who starts first
             isPlayer1Turn = rand.Next(2) == 0;
-
+            LoadCharacterImages();
             UpdateUI();
         }
 
@@ -49,6 +49,36 @@ namespace TurnBasedRPG
                 string skipLog = $"\n{GetCurrentPlayer().Name} is stunned! Skipping their turn...";
                 EndTurn(skipLog);
                 return; // Prevent double UpdateUI
+            }
+        }
+
+        private void LoadCharacterImages()
+        {
+            LoadCharacterImage(pictureBoxPlayer1, player1.Class, player1.Variant, false);  // Normal
+            LoadCharacterImage(pictureBoxPlayer2, player2.Class, player2.Variant, true);   // Mirrored
+        }
+
+        private void LoadCharacterImage(PictureBox pb, ClassType classType, int variant, bool mirror)
+        {
+            string imageName = $"{classType}{variant}.png";
+            string imagePath = System.IO.Path.Combine(Application.StartupPath, "Resources", imageName);
+
+            if (System.IO.File.Exists(imagePath))
+            {
+                Image img = Image.FromFile(imagePath);
+
+                if (mirror)
+                {
+                    img.RotateFlip(RotateFlipType.RotateNoneFlipX); // Mirror horizontally
+                }
+
+                pb.Image = img;
+                pb.SizeMode = PictureBoxSizeMode.StretchImage; // Or Zoom
+            }
+            else
+            {
+                pb.Image = null;
+                MessageBox.Show($"Image not found: {imagePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -121,14 +151,20 @@ namespace TurnBasedRPG
         {
             if (!player1.IsAlive)
             {
-                MessageBox.Show($"{player2.Name} wins!");
-                DisableButtons();
+                ShowVictory(player2.Name);
             }
             else if (!player2.IsAlive)
             {
-                MessageBox.Show($"{player1.Name} wins!");
-                DisableButtons();
+                ShowVictory(player1.Name);
             }
+        }
+
+        private void ShowVictory(string winnerName)
+        {
+            DisableButtons();
+            VictoryForm victoryForm = new VictoryForm(winnerName);
+            victoryForm.Show();
+            this.Hide(); // Optional: hide main form
         }
 
         private void DisableButtons()
@@ -182,6 +218,16 @@ namespace TurnBasedRPG
             {
                 g.DrawString(hpText, font, textBrush, new RectangleF(0, 0, panel.Width, panel.Height), format);
             }
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBoxPlayer2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

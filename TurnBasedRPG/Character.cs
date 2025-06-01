@@ -15,6 +15,7 @@ namespace TurnBasedRPG
     {
         public string Name;
         public ClassType Class;
+        public int Variant { get; set; }
 
         public int MaxHp;
         public int Hp;
@@ -125,14 +126,22 @@ namespace TurnBasedRPG
                 target.IsStunned = true;
                 target.Defense = 0;
 
-                if (target.Class == ClassType.Athlete && !target.PassiveTriggered)
+                if (target.Class == ClassType.NewStudent)
+                {
+                    target.Attack = Math.Max(1, target.Attack - 5);
+                    target.Defense = Math.Max(1, target.Defense - 5);
+                    target.Wits = Math.Max(1, target.Wits - 5);
+                    target.MentalStrength = Math.Max(1, target.MentalStrength - 5);
+
+                    log += $" {target.Name} is a New Student and maxed out their stress! Their stats drop by 5!";
+                }
+                else if (target.Class == ClassType.Athlete && !target.PassiveTriggered)
                 {
                     target.PassiveTriggered = true;
                     target.IsStunned = true;
                     log += $" {target.Name} is an Athlete and their passive triggers (Stunned on max stress)!";
                 }
-
-                if (Class == ClassType.Brainiac)
+                else if (Class == ClassType.Brainiac)
                 {
                     target.Hp = Math.Max(0, target.Hp - 20);
                     log += $" {Name} is a Brainiac and their passive triggers — {target.Name} loses 20 HP!";
@@ -156,10 +165,11 @@ namespace TurnBasedRPG
         {
             if (Class == ClassType.NewStudent)
             {
-                Hp = Math.Min(Hp + 5, MaxHp);
+                
                 Attack += 1;
                 Defense += 1;
                 Wits += 1;
+                PassiveTriggered = true;
             }
 
             if (Class == ClassType.Clown)
@@ -168,11 +178,13 @@ namespace TurnBasedRPG
 
                 if (rand.Next(100) < 10) // 10% stun
                     IsStunned = true;
+                PassiveTriggered = true;
             }
 
             if (Class == ClassType.Athlete && PassiveTriggered)
             {
                 Attack *= 2;
+                PassiveTriggered = true;
             }
         }
 
